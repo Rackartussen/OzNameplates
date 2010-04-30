@@ -119,7 +119,7 @@ local defaults = {
 		done = false,
 		overlayTexture = [=[Interface\Tooltips\Nameplate-Border]=],
 		backdrop = {
-			edgeFile = [=[Interface\Addons\caelNamePlates\media\glowtex]=], 
+			edgeFile = [=[Interface\Addons\OzNameplates\media\glowtex]=], 
 			edgeSize = 5,
 			insets = {
 				left = 3, 
