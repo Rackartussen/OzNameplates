@@ -116,7 +116,18 @@ local defaults = {
 		borderFile = "",
 		fontFlags = "",
 		background = {},
-		done = false
+		done = false,
+		overlayTexture = [=[Interface\Tooltips\Nameplate-Border]=],
+		backdrop = {
+			edgeFile = [=[Interface\Addons\caelNamePlates\media\glowtex]=], 
+			edgeSize = 5,
+			insets = {
+				left = 3, 
+				right = 3, 
+				top = 3, 
+				bottom = 3}
+			}
+		
 	},
 }
 
@@ -150,7 +161,6 @@ function OzNameplates:OnEnable()
 	self.dummyFrame:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
 
 	self:HookScript(self.dummyFrame,"OnUpdate","OnUpdate")
-	--self:HookScript(self.dummyFrame,"OnEvent","OnEvent")
 	self.unitClass = UnitClass("player")
 	if (self.unitClass == "Death Knight" or self.unitClass == "Druid") then
 		self:CheckShapeshiftInfo()
@@ -233,30 +243,6 @@ function OzNameplates:OnUpdate(dummyFrame, elapsed)
 	end
 end
 
-
-
---local barTexture = [=[Interface\Addons\OzMedia\StatusBars\oz001]=]
-local overlayTexture = [=[Interface\Tooltips\Nameplate-Border]=]
-local glowTexture = [=[Interface\Addons\caelNamePlates\media\glowtex]=]
---local glowTexture = [=[Interface\Addons\OzMedia\Borders\solid]=]
-local font, fontSize, fontOutline = [=[Interface\Addons\caelNamePlates\media\neuropol x cd rg.ttf]=], 9, ""
-local backdrop = {
-	edgeFile = glowTexture, edgeSize = 5,
-	insets = {left = 3, right = 3, top = 3, bottom = 3}
-}
-
-local select = select
---[[
--- Execute/Kill Shot/Hammer of Wrath/Drain Soul
-local pewpewRangeFactor
-local _, playerClass = UnitClass("player")
-
-if playerClass == "WARLOCK" then
-	pewpewRangeFactor = 4
-elseif playerClass == "HUNTER" or playerClass == "WARRIOR" or playerClass == "PALADIN" then
-	pewpewRangeFactor = 5
-end
---]]
 function OzNameplates:IsValidFrame(frame)
 	if frame:GetName() then
 		return
@@ -264,7 +250,7 @@ function OzNameplates:IsValidFrame(frame)
 
 	overlayRegion = select(2, frame:GetRegions())
 
-	return overlayRegion and overlayRegion:GetObjectType() == "Texture" and overlayRegion:GetTexture() == overlayTexture
+	return overlayRegion and overlayRegion:GetObjectType() == "Texture" and overlayRegion:GetTexture() == self.db.profile.overlayTexture
 end
 
 local UpdateTime = function(self, curValue)
@@ -399,22 +385,6 @@ function OzNameplates:UpdateFrame (nameplateFrame)
 	end
 end
 
---[[
-local OnHealthChanged = function(self)
-	local r, g, b = self:GetStatusBarColor()
-	local _, max = self:GetMinMaxValues()
-	local cur = self:GetValue()
-	if self.UnitType == "Hostile" and cur > 0 and cur < max/pewpewRangeFactor and self:GetParent():GetAlpha() == 1 and not self.Trigger then
-		self.Trigger = true
-		if RecScrollAreas then
-			RecScrollAreas:AddText("|cffAF5050Kill Shot|r", true, "Notification", true)
-		end
-	elseif self.UnitType == "Hostile" and cur >= max/pewpewRangeFactor and self.Trigger then
-		self.Trigger = false
-	end
-end
---]]
-
 function OzNameplates:GetTargetSpellInfo()
 	local _, _, displayName, icon, _, _, _, castId, noInterrupt = UnitCastingInfo("target")
 	if displayName then
@@ -488,28 +458,6 @@ function OzNameplates:OnEvent(frame, event, unit)
 	end
 end
 
-local function GetClass(r, g, b)
-	local r, g, b = floor(r*100+.5)/100, floor(g*100+.5)/100, floor(b*100+.5)/100
-	for class, color in pairs(RAID_CLASS_COLORS) do
-		if RAID_CLASS_COLORS[class].r == r and RAID_CLASS_COLORS[class].g == g and RAID_CLASS_COLORS[class].b == b then
-			return class
-		end
-	end
-	return 0
-end
-
-local function ClassIconTexCoord(r, g, b)
-	class = GetClass(r,g,b)
-	if not (class==0) then
-		local texcoord = CLASS_BUTTONS[class]
-		if (texcoord) then
-			return unpack(texcoord)
-		end
-	end
-	return 0.5, 0.75, 0.5, 0.75
-end
-
-
 function OzNameplates:CreateFrame(frame)
 	if frame.done then
 		return
@@ -543,11 +491,6 @@ function OzNameplates:CreateFrame(frame)
 	levelTextRegion:SetShadowOffset(0.5, -0.5)
 
 	healthBar:SetStatusBarTexture(self.db.profile.statusBar)
---[[
-	if pewpewRangeFactor then
-		healthBar:HookScript("OnValueChanged", OnHealthChanged)
-	end
---]]
 	healthBar.hpBackground = healthBar:CreateTexture(nil, "BORDER")
 	healthBar.hpBackground:SetAllPoints(healthBar)
 	healthBar.hpBackground:SetTexture(self.db.profile.statusBar)
@@ -556,7 +499,7 @@ function OzNameplates:CreateFrame(frame)
 	healthBar.hpGlow = CreateFrame("Frame", nil, healthBar)
 	healthBar.hpGlow:SetPoint("TOPLEFT", healthBar, "TOPLEFT", -4.5, 4)
 	healthBar.hpGlow:SetPoint("BOTTOMRIGHT", healthBar, "BOTTOMRIGHT", 4.5, -4.5)
-	healthBar.hpGlow:SetBackdrop(backdrop)
+	healthBar.hpGlow:SetBackdrop(self.db.profile.backdrop)
 	healthBar.hpGlow:SetBackdropColor(0, 0, 0)
 	healthBar.hpGlow:SetBackdropBorderColor(0, 0, 0)
 
@@ -565,10 +508,6 @@ function OzNameplates:CreateFrame(frame)
 	castBar.shieldedRegion = shieldedRegion
 	castBar:SetStatusBarTexture(self.db.profile.statusBar)
 
-	--castBar:HookScript("OnShow", OnShow)
-	--castBar:HookScript("OnSizeChanged", OnSizeChanged)
-	--castBar:HookScript("OnValueChanged", OnValueChanged)
-	--castBar:HookScript("OnEvent", OnEvent)
 	self:HookScript(castBar,"OnShow","OnShow")
 	self:HookScript(castBar,"OnSizeChanged","OnSizeChanged")
 	self:HookScript(castBar,"OnValueChanged","OnValueChanged")
@@ -603,7 +542,7 @@ function OzNameplates:CreateFrame(frame)
 	castBar.cbGlow = CreateFrame("Frame", nil, castBar)
 	castBar.cbGlow:SetPoint("TOPLEFT", castBar, "TOPLEFT", -4.5, 4)
 	castBar.cbGlow:SetPoint("BOTTOMRIGHT", castBar, "BOTTOMRIGHT", 4.5, -4.5)
-	castBar.cbGlow:SetBackdrop(backdrop)
+	castBar.cbGlow:SetBackdrop(self.db.profile.backdrop)
 	castBar.cbGlow:SetBackdropColor(0, 0, 0)
 	castBar.cbGlow:SetBackdropBorderColor(0, 0, 0)
 
@@ -639,21 +578,6 @@ function OzNameplates:CreateFrame(frame)
 	frame.elapsed = 0
 	self:HookScript(frame, "OnUpdate", "ThreatUpdate")
 end
-
-local numKids = 0
-local lastUpdate = 0
-
---[[
-caelNamePlates:RegisterEvent("PLAYER_REGEN_ENABLED")
-function caelNamePlates:PLAYER_REGEN_ENABLED()
-	SetCVar("nameplateShowEnemies", 0)
-end
-
-caelNamePlates:RegisterEvent("PLAYER_REGEN_DISABLED")
-function caelNamePlates.PLAYER_REGEN_DISABLED()
-	SetCVar("nameplateShowEnemies", 1)
-end
---]]
 
 function OzNameplates:HealthBarOptionsGet(info)
 	return self.db.profile.healthBar[info[#info]]

@@ -3,11 +3,10 @@
 ## Author: Oz
 ## Version: 0.3
 ## OptionalDeps: OzMedia
-## RequiredDeps: Ace3
+## RequiredDeps: Ace3, LibSharedMedia-3.0
 ## SavedVariables: OzNameplatesDB
 ## Notes: Simple and clean nameplates modifier
 
 
 OzNameplates.lua
-
 
