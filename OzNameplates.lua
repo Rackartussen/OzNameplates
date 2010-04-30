@@ -178,7 +178,7 @@ function OzNameplates:PLAYER_TALENT_UPDATE()
 end
 
 function OzNameplates:CheckTalentInfo()
-	local talentInfo = {}
+	local talentInfo = {0,0,0}
 	for i = 1, GetNumTalentTabs() do
        local name, icon, pointsSpent, _, _ = GetTalentTabInfo(i)
 	   talentInfo[i] = pointsSpent
@@ -310,7 +310,7 @@ function OzNameplates:GetClass(r, g, b)
 end
 
 function OzNameplates:ClassIconTexCoord(r, g, b)
-	class = self:GetClass(r,g,b)
+	local class = self:GetClass(r,g,b)
 	if not (class==0) then
 		local texcoord = CLASS_BUTTONS[class]
 		if (texcoord) then

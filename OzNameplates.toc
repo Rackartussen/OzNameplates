@@ -1,7 +1,7 @@
 ## Interface: 30300
 ## Title: OzNameplates
 ## Author: Oz
-## Version: 0.3
+## Version: 0.4
 ## OptionalDeps: OzMedia
 ## RequiredDeps: Ace3, LibSharedMedia-3.0
 ## SavedVariables: OzNameplatesDB
