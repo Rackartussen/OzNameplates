@@ -428,7 +428,7 @@ function OzNameplates:ColorCastBar(frame, shielded)
 end
 
 function OzNameplates:OnSizeChanged(frame)
-	self.needFix = true
+	frame.needFix = true
 end
 
 function OzNameplates:OnValueChanged(frame, curValue)
