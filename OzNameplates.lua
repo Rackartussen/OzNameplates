@@ -367,7 +367,7 @@ function OzNameplates:UpdateFrame (nameplateFrame)
 	nameplateFrame.highlight:SetAllPoints(nameplateFrame.healthBar)
 	local nameplateName = nameplateFrame.oldname:GetText()
 	if (nameplateName == "Grounding Totem") then
-		self:Print("Hi there");
+		--self:Print("Hi there");
 	end
 	nameplateFrame.name:SetText(nameplateName)
 
