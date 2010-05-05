@@ -434,7 +434,7 @@ end
 function OzNameplates:OnValueChanged(frame, curValue)
 	UpdateTime(frame, curValue)
 	if frame.needFix then
-		FixCastbar(frame)
+		self:FixCastbar(frame)
 		frame.needFix = nil
 	end
 end
