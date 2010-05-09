@@ -265,6 +265,11 @@ end
 function OzNameplates:ThreatUpdate (nameplateFrame, elapsed)
 	nameplateFrame.elapsed = nameplateFrame.elapsed + elapsed
 	if nameplateFrame.elapsed >= 0.2 then
+	    local minHealth, maxHealth = nameplateFrame.healthBar:GetMinMaxValues()
+	    local valueHealth = nameplateFrame.healthBar:GetValue()
+	    nameplateFrame.healthBar:SetMinMaxValues(minHealth, maxHealth)
+	    nameplateFrame.healthBar:SetValue(valueHealth)
+	    nameplateFrame.percentageRegion:SetText(string.format("%d%%", math.ceil((valueHealth/maxHealth)*100)))    
 		if not self.db.profile.tanking then
 			if not nameplateFrame.oldglow:IsShown() then
 				nameplateFrame.healthBar.hpGlow:SetBackdropBorderColor(0, 0, 0)
@@ -352,7 +357,7 @@ function OzNameplates:UpdateFrame (nameplateFrame)
 	end
 
 	nameplateFrame.r, nameplateFrame.g, nameplateFrame.b = newr, newg, newb
-
+    
 	nameplateFrame.healthBar:ClearAllPoints()
 	nameplateFrame.healthBar:SetPoint("CENTER", nameplateFrame.healthBar:GetParent())
 	nameplateFrame.healthBar:SetHeight(self.db.profile.healthBar.height)
@@ -373,7 +378,7 @@ function OzNameplates:UpdateFrame (nameplateFrame)
 
 	local level, elite, mylevel = tonumber(nameplateFrame.level:GetText()), nameplateFrame.elite:IsShown(), UnitLevel("player")
 	nameplateFrame.level:ClearAllPoints()
-	nameplateFrame.level:SetPoint("RIGHT", nameplateFrame.healthBar, "RIGHT", -2, 0)
+	nameplateFrame.level:SetPoint("LEFT", nameplateFrame.healthBar, "LEFT", 2, 0)
 	if nameplateFrame.boss:IsShown() then
 		nameplateFrame.level:SetText("B")
 		nameplateFrame.level:SetTextColor(0.8, 0.05, 0)
@@ -473,12 +478,28 @@ function OzNameplates:CreateFrame(frame)
 	nameTextRegion:Hide()
 
 	local newNameRegion = frame:CreateFontString()
-	newNameRegion:SetPoint("LEFT", healthBar, "LEFT", 0, 1)
+	newNameRegion:SetPoint("LEFT", healthBar, "LEFT", 14, 0)
 	newNameRegion:SetFont(self.db.profile.font, self.db.profile.fontSize, self.db.profile.fontFlags)
 	newNameRegion:SetTextColor(0.84, 0.75, 0.65)
 	newNameRegion:SetShadowOffset(0.5, -0.5)
+	newNameRegion:SetWidth(frame.healthBar:GetWidth()-30)
+	newNameRegion:SetWordWrap(false)
 	frame.name = newNameRegion
 
+	local percentageRegion = frame:CreateFontString()
+	percentageRegion:SetPoint("RIGHT", healthBar, "RIGHT", -2, 0)
+	percentageRegion:SetFont(self.db.profile.font, self.db.profile.fontSize, self.db.profile.fontFlags)
+	percentageRegion:SetTextColor(0, 1, 1)
+	percentageRegion:SetShadowOffset(0.5, -0.5)
+	frame.percentageRegion = percentageRegion
+
+    local minHealth, maxHealth = frame.healthBar:GetMinMaxValues()
+    local valueHealth = frame.healthBar:GetValue()
+    
+    frame.healthBar:SetMinMaxValues(minHealth, maxHealth)
+    frame.healthBar:SetValue(valueHealth)
+    percentageRegion:SetText(string.format("%d%%", math.ceil((valueHealth/maxHealth)*100)))    
+	
 	local classicontexture = frame:CreateTexture(nil, "OVERLAY")
 	classicontexture:SetPoint("TOPRIGHT", healthBar, "TOPLEFT", 0, 0)
 	classicontexture:SetTexture("Interface\\WorldStateFrame\\Icons-Classes")
