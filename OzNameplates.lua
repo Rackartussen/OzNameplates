@@ -274,10 +274,12 @@ function OzNameplates:ThreatUpdate (nameplateFrame, elapsed)
 			if not nameplateFrame.oldglow:IsShown() then
 				nameplateFrame.healthBar.hpGlow:SetBackdropBorderColor(0, 0, 0)
 				nameplateFrame.healthBar:SetWidth(self.db.profile.healthBar.width);
+				nameplateFrame.healthBar:SetHeight(self.db.profile.healthBar.height)
 				nameplateFrame.healthBar:SetStatusBarColor(nameplateFrame.r, nameplateFrame.g, nameplateFrame.b)
 			else
 				nameplateFrame.healthBar.hpGlow:SetBackdropBorderColor(1,0,0)
 				nameplateFrame.healthBar:SetWidth(self.db.profile.healthBar.width*1.2);
+				nameplateFrame.healthBar:SetHeight(self.db.profile.healthBar.height)
 				if (nameplateFrame.healthBar.UnitType == "Hostile") then
 					nameplateFrame.healthBar:SetStatusBarColor(1, 0, 0)
 				else
@@ -288,6 +290,7 @@ function OzNameplates:ThreatUpdate (nameplateFrame, elapsed)
 			if not nameplateFrame.oldglow:IsShown() then
 				nameplateFrame.healthBar.hpGlow:SetBackdropBorderColor(1,0,0)
 				nameplateFrame.healthBar:SetWidth(self.db.profile.healthBar.width*1.2);
+				nameplateFrame.healthBar:SetHeight(self.db.profile.healthBar.height)
 				if (nameplateFrame.healthBar.UnitType == "Hostile") then
 					nameplateFrame.healthBar:SetStatusBarColor(1, 0, 0)
 				else
@@ -296,6 +299,7 @@ function OzNameplates:ThreatUpdate (nameplateFrame, elapsed)
 			else
 				nameplateFrame.healthBar.hpGlow:SetBackdropBorderColor(0, 0, 0)
 				nameplateFrame.healthBar:SetWidth(self.db.profile.healthBar.width);
+				nameplateFrame.healthBar:SetHeight(self.db.profile.healthBar.height)
 				nameplateFrame.healthBar:SetStatusBarColor(nameplateFrame.r, nameplateFrame.g, nameplateFrame.b)
 			end
 		end
@@ -479,6 +483,7 @@ function OzNameplates:CreateFrame(frame)
 
 	local newNameRegion = frame:CreateFontString()
 	newNameRegion:SetPoint("LEFT", healthBar, "LEFT", 14, 0)
+	--newNameRegion:SetPoint("RIGHT", healthBar, "RIGHT", 25, 0)
 	newNameRegion:SetFont(self.db.profile.font, self.db.profile.fontSize, self.db.profile.fontFlags)
 	newNameRegion:SetTextColor(0.84, 0.75, 0.65)
 	newNameRegion:SetShadowOffset(0.5, -0.5)
